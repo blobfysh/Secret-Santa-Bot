@@ -1,0 +1,11 @@
+{
+  "prefix":       "s!",
+  "sqlhostname":  "localhost",
+  "sqluser":      "root",
+  "sqlpass":      "password",
+  "sqldatabase":  "secret_santa",
+  "debug":        true,
+  "botToken":     "NdgGSDGAhgfbdfvad_SUPER_.XdsV_SECRET_dsafcdvd_TOKEN",
+  "adminUsers":   ["168958344361541633"],
+  "embeds_color": "#ff6666"
+}

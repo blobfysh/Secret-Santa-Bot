@@ -1,0 +1,15 @@
+{
+  "name": "secret-santa-bot",
+  "version": "1.0.0",
+  "description": "Start a secret santa with your friends using Discord!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "blobfysh",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "mysql": "^2.17.1"
+  }
+}
