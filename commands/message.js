@@ -35,7 +35,7 @@ module.exports = {
 
             try{
                 const giftee = await message.client.fetchUser(row.partnerId);
-                await giftee.send(gifteeEmbed);
+                await giftee.send(getAttachments(message, gifteeEmbed));
 
                 message.reply('Successfully sent your message anonymously to <@' + row.partnerId + '>!');
             }
@@ -53,7 +53,7 @@ module.exports = {
 
             try{
                 const gifter = await message.client.fetchUser(gifterRow.userId);
-                await gifter.send(gifterEmbed);
+                await gifter.send(getAttachments(message, gifterEmbed));
 
                 message.reply('Successfully sent message to your gifter!');
             }
@@ -62,4 +62,23 @@ module.exports = {
             }
         }
     },
+}
+
+function getAttachments(message, embed){
+    let imageAttached = message.attachments.array();
+
+    if(Array.isArray(imageAttached) && imageAttached.length){
+        if(imageAttached[0].url.endsWith(".mp4") || imageAttached[0].url.endsWith(".mp3")){
+            embed.addField('File', imageAttached[0].url);
+            return {files: [imageAttached[0].url], embed: embed};
+            //attachURL = `{name: "File", value: "${imageAttached[0].url}"},`;
+            //embedFile = `files: [{attachment: "${imageAttached[0].url}"}], embed: `;
+        }
+        else{
+            embed.setImage(imageAttached[0].url);
+            return embed;
+        }
+    }
+    
+    return embed;
 }
