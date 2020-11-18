@@ -20,7 +20,7 @@ module.exports = {
 
         if(row.exchangeId == 0) return message.reply('You aren\'t in a Secret Santa.');
 
-        else if(!exchangeRow || exchangeRow.userId !== exchangeRow.creatorId) return message.reply('You can\'t start a Secret Santa that you didn\'t create.\n\nAsk `' + (await message.client.fetchUser(exchangeRow.creatorId)).tag + '` to start it.');
+        else if(!exchangeRow || exchangeRow.userId !== exchangeRow.creatorId) return message.reply('You can\'t start a Secret Santa that you didn\'t create.\n\nAsk `' + (await message.client.users.fetch(exchangeRow.creatorId)).tag + '` to start it.');
 
         else if(exchangeRow.started == 1) return message.reply('The Secret Santa has already started!');
 
@@ -49,9 +49,9 @@ async function pickRandom(message, exchangeId, prefix){
         try{
             await query(`UPDATE users SET partnerId = ${partnerId} WHERE userId = ${userIds[i]}`);
             const partnerInfo = (await query(`SELECT * FROM users WHERE userId = ${partnerId}`))[0];
-            const user = await message.client.fetchUser(userIds[i]);
+            const user = await message.client.users.fetch(userIds[i]);
 
-            const startEmbed = new Discord.RichEmbed()
+            const startEmbed = new Discord.MessageEmbed()
             .setTitle('__Secret Santa Started!__')
             .setDescription('You were chosen to gift: <@' + partnerId + '> 🎄' + (partnerInfo.wishlist == '' ? '' : '\n\nHere\'s their wishlist:\n```' + partnerInfo.wishlist + '```') + '\n\nYou can message them with `' + prefix + 'message giftee <message>`')
             .setFooter('Shhhhhhhhh')

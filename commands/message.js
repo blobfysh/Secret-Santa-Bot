@@ -13,7 +13,7 @@ module.exports = {
     forceDMsOnly: true,
     modOnly: false,
     adminOnly: false,
-    
+
     async execute(message, args, prefix){
         const row = (await query(`SELECT * FROM users WHERE userId = ${message.author.id}`))[0];
         const gifterRow = (await query(`SELECT * FROM users WHERE partnerId = ${message.author.id}`))[0];
@@ -22,11 +22,11 @@ module.exports = {
         if(row.exchangeId == 0) return message.reply('You aren\'t in a Secret Santa.');
 
         else if(!args.length) return message.reply('You need to specify who you\'re going to message! `' + prefix + 'message <gifter/giftee> <message to send>`.\n\ngiftee - The person you were chosen to get a gift for (<@' + row.partnerId + '>).\ngifter - The person gifting you');
-        
+
         else if(args[0] !== 'giftee' && args[0] !== 'gifter') return message.reply('You need to specify who you\'re going to message! `' + prefix + 'message <gifter/giftee> <message to send>`.\n\ngiftee - The person you were chosen to get a gift for (<@' + row.partnerId + '>).\ngifter - The person gifting you');
-    
+
         else if(args[0] == 'giftee'){
-            const gifteeEmbed = new Discord.RichEmbed()
+            const gifteeEmbed = new Discord.MessageEmbed()
             .setTitle('__You received an anonymous message from your Secret Santa!__')
             .setDescription('\n' + args.slice(1).join(' '))
             .setColor(config.embeds_color)
@@ -34,7 +34,7 @@ module.exports = {
             .setThumbnail('https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/209/father-christmas_1f385.png')
 
             try{
-                const giftee = await message.client.fetchUser(row.partnerId);
+                const giftee = await message.client.users.fetch(row.partnerId);
                 await giftee.send(getAttachments(message, gifteeEmbed));
 
                 message.reply('Successfully sent your message anonymously to <@' + row.partnerId + '>!');
@@ -44,7 +44,7 @@ module.exports = {
             }
         }
         else if(args[0] == 'gifter'){
-            const gifterEmbed = new Discord.RichEmbed()
+            const gifterEmbed = new Discord.MessageEmbed()
             .setTitle('__You received a message from your giftee ' + message.author.tag + '!__')
             .setDescription('\n' + args.slice(1).join(' '))
             .setColor(config.embeds_color)
@@ -52,7 +52,7 @@ module.exports = {
             .setThumbnail('https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/209/incoming-envelope_1f4e8.png')
 
             try{
-                const gifter = await message.client.fetchUser(gifterRow.userId);
+                const gifter = await message.client.users.fetch(gifterRow.userId);
                 await gifter.send(getAttachments(message, gifterEmbed));
 
                 message.reply('Successfully sent message to your gifter!');
@@ -79,6 +79,6 @@ function getAttachments(message, embed){
             return embed;
         }
     }
-    
+
     return embed;
 }

@@ -11,7 +11,8 @@ const client = new Discord.Client({
     messageCacheMaxSize: 50,
     messageCacheLifetime: 300,
     messageSweepInterval: 500,
-    disableEveryone: true
+    disableMentions: 'everyone',
+    partials: ['MESSAGE', 'REACTION', 'GUILD_MEMBER', 'USER']
 });
 
 client.sets         = require('./utils/sets.js');
@@ -50,11 +51,9 @@ client.on('disconnect', (err) => {
     client.destroy().then(client.login(config.botToken));
 });
 
-/*
 client.on('debug', (message) => {
-	console.debug(message);
+	if(config.debug) console.debug(message);
 });
-*/
 
 client.on('reconnecting', () => {
 	console.log('[APP] Bot reconnecting...');
@@ -80,9 +79,11 @@ client.on('messageReactionAdd', async (reaction, user) => {
     const exchangeId = reaction.message.id
     const exchange = (await query(`SELECT * FROM exchange WHERE exchangeId = ${exchangeId}`))[0];
 
-    if(!exchange) return console.log('no exchange on message');
+    // no exchange associated with message
+    if(!exchange) return;
 
-    else if(exchange.started === 1) return console.log('exchange already started');
+    // exchange already started
+    else if(exchange.started === 1) return;
 
     let row = (await query(`SELECT * FROM users WHERE userId = ${user.id}`))[0];
 
@@ -94,11 +95,11 @@ client.on('messageReactionAdd', async (reaction, user) => {
     if(row.exchangeId === 0){
         await query(`UPDATE users SET exchangeId = ${exchangeId} WHERE userId = ${user.id}`);
 
-        const joinEmbed = new Discord.RichEmbed()
+        const joinEmbed = new Discord.MessageEmbed()
         .setDescription(`__Successfully joined <@${exchange.creatorId}>'s Secret Santa!__\nI will let you know when names are drawn!`)
         .setColor(config.embeds_color)
 
-        const recipient = await client.fetchUser(user.id);
+        const recipient = await client.users.fetch(user.id);
 
         recipient.send(joinEmbed);
     }

@@ -13,14 +13,15 @@ module.exports = {
     forceDMsOnly: true,
     modOnly: false,
     adminOnly: false,
-    
+
     async execute(message, args, prefix){
         const row = (await query(`SELECT * FROM users WHERE userId = ${message.author.id}`))[0];
         const partnerRow = (await query(`SELECT * FROM users WHERE userId = ${row.partnerId}`))[0];
+        const wishList = partnerRow.wishlist || 'No preferences.';
 
-        const partnerEmbed = new Discord.RichEmbed()
+        const partnerEmbed = new Discord.MessageEmbed()
         .setTitle('__Partner Information__')
-        .setDescription('<@' + row.partnerId + '>\n\nWishlist: ```' + partnerRow.wishlist + '```')
+        .setDescription('<@' + row.partnerId + '>\n\nWishlist: ```' + wishList + '```')
         .setColor(config.embeds_color)
         .setFooter('Need more info? Message them with the message command!')
 

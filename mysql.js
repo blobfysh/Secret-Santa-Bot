@@ -34,9 +34,9 @@ function connectSQL(){
 
     db.connect((err) => {
         if(err) return console.log('[MYSQL] Could not connect to SQL database: ' + err + '\n\n\nYou probably need to create the secret_santa database, open "MYSQL Command Line Client" using windows search and run: CREATE DATABASE IF NOT EXISTS secret_santa;\n\n\n');
-        
+
         console.log('[MYSQL] MySQL Connected.');
-        
+
         // Create banned users table
         db.query('CREATE TABLE IF NOT EXISTS banned (userId bigint, reason VARCHAR(2048), date bigint) ENGINE = InnoDB', (err, result) => {
             if(err) return console.log(err);
@@ -69,7 +69,7 @@ function query(sql, args){
     return new Promise((resolve, reject) => {
         db.query(sql, args, (err, rows) => {
             if(err) return reject(err);
-            
+
             resolve(rows);
         });
     });

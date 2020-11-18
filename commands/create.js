@@ -20,7 +20,7 @@ module.exports = {
 
         if(row.exchangeId !== 0) return message.reply('You are already in a Secret Santa! Ask the creator of the secret santa to cancel it before making a new one.');
 
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle('__' + message.member.displayName + ' started a new Secret Santa!__')
         .setDescription('React with 🎅 to join!')
         .setFooter(message.member.displayName + ' can draw names with ' + config.prefix + 'start')

@@ -13,7 +13,7 @@ module.exports = {
     forceDMsOnly: false,
     modOnly: false,
     adminOnly: false,
-    
+
     async execute(message, args, prefix){
         const row = (await query(`SELECT * FROM users WHERE userId = ${message.author.id}`))[0];
         const rows = (await query(`SELECT * FROM users WHERE exchangeId = ${row.exchangeId}`));
@@ -24,14 +24,14 @@ module.exports = {
         var userTags = [];
 
         for(var i = 0; i < rows.length; i++){
-            userTags.push( (await message.client.fetchUser(rows[i].userId)).tag )
+            userTags.push( (await message.client.users.fetch(rows[i].userId)).tag )
         }
 
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle('__Participants__')
         .setDescription(userTags.map((user, index) => (index + 1) + '. ' + user).join('\n'))
         .setColor(config.embeds_color)
-        .setFooter('Started by ' + (await message.client.fetchUser(exchangeRow.creatorId)).username)
+        .setFooter('Started by ' + (await message.client.users.fetch(exchangeRow.creatorId)).username)
 
         message.channel.send(embed);
     },

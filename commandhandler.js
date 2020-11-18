@@ -37,12 +37,8 @@ exports.handleCmd = async function(message, prefix){
 
 async function cacheMembers(message){
     try{
-        await message.guild.fetchMembers();
-
-        if(!message.member){
-            console.log('[CMD] Fetching member...');
-            message.member = message.guild.members.get(message.author.id);
-        }
+        console.log('[CMD] Fetching members...')
+        await message.guild.members.fetch();
     }
     catch(err){
         console.log('[CMD] Failed to fetch guild members: ' + err);
