@@ -25,7 +25,7 @@
 
 ### Downloads:
 
-[Node.js](https://nodejs.org/en/download/) (10.0.0 or higher)
+[Node.js](https://nodejs.org/en/download/) (12.x or higher)
 
 [MySQL](https://dev.mysql.com/downloads/installer/)
 
