@@ -5,6 +5,7 @@ const Discord = require('discord.js');
 
 const { connectSQL, query } = require('./mysql.js');
 const { handleCmd }         = require('./commandhandler.js');
+const methods = require('./utils/methods');
 
 const client = new Discord.Client({
     messageCacheMaxSize: 50,
@@ -71,6 +72,36 @@ client.on('ready', async () => {
 
     console.log(`[APP] Bot is ready`);
     client.fullLockdown = false;
+});
+
+client.on('messageReactionAdd', async (reaction, user) => {
+    if(reaction.emoji.name !== '🎅') return;
+
+    const exchangeId = reaction.message.id
+    const exchange = (await query(`SELECT * FROM exchange WHERE exchangeId = ${exchangeId}`))[0];
+
+    if(!exchange) return console.log('no exchange on message');
+
+    else if(exchange.started === 1) return console.log('exchange already started');
+
+    let row = (await query(`SELECT * FROM users WHERE userId = ${user.id}`))[0];
+
+    if(!row) {
+        await methods.createNewUser(user.id);
+        row = (await query(`SELECT * FROM users WHERE userId = ${user.id}`))[0];
+    }
+
+    if(row.exchangeId === 0){
+        await query(`UPDATE users SET exchangeId = ${exchangeId} WHERE userId = ${user.id}`);
+
+        const joinEmbed = new Discord.RichEmbed()
+        .setDescription(`__Successfully joined <@${exchange.creatorId}>'s Secret Santa!__\nI will let you know when names are drawn!`)
+        .setColor(config.embeds_color)
+
+        const recipient = await client.fetchUser(user.id);
+
+        recipient.send(joinEmbed);
+    }
 });
 
 process.on('unhandledRejection', (reason, p) => {

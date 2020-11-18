@@ -35,37 +35,6 @@ module.exports = {
 
         await query(`UPDATE users SET exchangeId = ${botMessage.id} WHERE userId = ${message.author.id}`);
         await addNewExchange(botMessage.id, message.author.id);
-
-        const collector = botMessage.createReactionCollector((reaction, user) => user.id !== message.author.id && reaction.emoji.name === '🎅');
-
-        collector.on("collect", async reaction => {
-            var users = reaction.users.filter(user => !user.bot).map(user => user.id);
-
-            for(var i = 0; i < users.length; i++){
-                const row = (await query(`SELECT * FROM users WHERE userId = ${users[i]}`))[0];
-
-                if(!row) await methods.createNewUser(users[i]);
-
-                else if(!((await query(`SELECT * FROM exchange WHERE exchangeId = ${botMessage.id}`))[0])) collector.stop();
-
-                else if(((await query(`SELECT * FROM exchange WHERE exchangeId = ${botMessage.id}`))[0]).started == 1) collector.stop();
-
-                else if(row.exchangeId == 0){
-                    await query(`UPDATE users SET exchangeId = ${botMessage.id} WHERE userId = ${users[i]}`);
-
-                    const joinEmbed = new Discord.RichEmbed()
-                    .setTitle('__Successfully joined ' + message.author.username + '\'s Secret Santa!__')
-                    .setDescription('I will let you know when names are drawn!')
-                    .setColor(config.embeds_color)
-
-                    const user = await message.client.fetchUser(users[i]);
-
-                    user.send(joinEmbed);
-                }
-            }
-        });
-        collector.on("end", reaction => {
-        });
     },
 }
 
