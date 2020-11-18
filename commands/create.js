@@ -14,7 +14,7 @@ module.exports = {
     modOnly: false,
     adminOnly: false,
     guildModsOnly: true,
-    
+
     async execute(message, args, prefix){
         const row = (await query(`SELECT * FROM users WHERE userId = ${message.author.id}`))[0];
 
@@ -49,7 +49,7 @@ module.exports = {
                 else if(!((await query(`SELECT * FROM exchange WHERE exchangeId = ${botMessage.id}`))[0])) collector.stop();
 
                 else if(((await query(`SELECT * FROM exchange WHERE exchangeId = ${botMessage.id}`))[0]).started == 1) collector.stop();
-                
+
                 else if(row.exchangeId == 0){
                     await query(`UPDATE users SET exchangeId = ${botMessage.id} WHERE userId = ${users[i]}`);
 
@@ -57,7 +57,7 @@ module.exports = {
                     .setTitle('__Successfully joined ' + message.author.username + '\'s Secret Santa!__')
                     .setDescription('I will let you know when names are drawn!')
                     .setColor(config.embeds_color)
-                    
+
                     const user = await message.client.fetchUser(users[i]);
 
                     user.send(joinEmbed);

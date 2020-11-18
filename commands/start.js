@@ -13,7 +13,7 @@ module.exports = {
     forceDMsOnly: false,
     modOnly: false,
     adminOnly: false,
-    
+
     async execute(message, args, prefix){
         const row = (await query(`SELECT * FROM users WHERE userId = ${message.author.id}`))[0];
         const exchangeRow = (await query(`SELECT * FROM users INNER JOIN exchange ON users.exchangeId = exchange.exchangeId WHERE userId = ${message.author.id}`))[0];
@@ -23,7 +23,7 @@ module.exports = {
         else if(!exchangeRow || exchangeRow.userId !== exchangeRow.creatorId) return message.reply('You can\'t start a Secret Santa that you didn\'t create.\n\nAsk `' + (await message.client.fetchUser(exchangeRow.creatorId)).tag + '` to start it.');
 
         else if(exchangeRow.started == 1) return message.reply('The Secret Santa has already started!');
-        
+
         await query(`UPDATE exchange SET started = 1 WHERE exchangeId = ${exchangeRow.exchangeId}`);
         const botMsg = await message.reply('Shuffling participants and messaging...');
 
@@ -42,10 +42,10 @@ async function pickRandom(message, exchangeId, prefix){
     }
 
     shuffle(userIds);
-    
+
     for(var i = 0; i < userIds.length; i++){
         var partnerId = i == userIds.length - 1 ? userIds[0] : userIds[i + 1];
-        
+
         try{
             await query(`UPDATE users SET partnerId = ${partnerId} WHERE userId = ${userIds[i]}`);
             const partnerInfo = (await query(`SELECT * FROM users WHERE userId = ${partnerId}`))[0];

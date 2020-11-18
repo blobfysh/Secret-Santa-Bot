@@ -14,15 +14,15 @@ exports.handleCmd = async function(message, prefix){
 
     else if(command.forceDMsOnly && message.channel.type !== 'dm') return message.reply('That command only works in DMs!');
 
-    if(message.channel.type !== 'dm') await cacheMember(message);
+    if(message.channel.type !== 'dm') await cacheMembers(message);
     if(!(await query(`SELECT * FROM users WHERE userId = ${message.author.id}`)).length) await methods.createNewUser(message.author.id); // Create new account in database for user BEFORE executing a command.
-    
+
     const row = (await query(`SELECT * FROM users WHERE userId = ${message.author.id}`))[0];
 
     if(command.requirePartner && row.partnerId == 0) return message.reply('A partner has not been chosen for you yet! Try again after you\'ve been given a partner.');
 
     else if(command.guildModsOnly && !message.member.hasPermission("MANAGE_GUILD")) return message.reply('You need the `MANAGE_SERVER` permission to run that command.');
-    
+
     else if(command.adminOnly && !message.client.sets.adminUsers.has(message.author.id)) return message.reply('You must be an admin of the bot to run that command.');
 
     try{
@@ -35,14 +35,16 @@ exports.handleCmd = async function(message, prefix){
     }
 }
 
-async function cacheMember(message){
+async function cacheMembers(message){
     try{
+        await message.guild.fetchMembers();
+
         if(!message.member){
             console.log('[CMD] Fetching member...');
-            await message.guild.fetchMember(message.author);
+            message.member = message.guild.members.get(message.author.id);
         }
     }
     catch(err){
-        console.log('[CMD] Failed to fetch a member: ' + err);
+        console.log('[CMD] Failed to fetch guild members: ' + err);
     }
 }
