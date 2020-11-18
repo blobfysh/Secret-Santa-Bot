@@ -40,3 +40,5 @@ After that the bot should be ready! Now just start it:
 ```shell
 node app.js
 ```
+
+**IMPORTANT NOTE**: This bot requires the **Server Members** intent which you will have to enable on your bot's application page.
